@@ -1,0 +1,371 @@
+{
+  "info": {
+    "_postman_id": "1bf54b8d-7361-48e6-9d5d-4c6d59a7cbf6",
+    "name": "Emergencias Backend Challenge",
+    "description": "Postman collection for the contacts and activities API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 200', () => pm.response.to.have.status(200));",
+              "pm.test('service is healthy', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.status).to.eql('ok');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Contact",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const suffix = Date.now();",
+              "pm.collectionVariables.set('contactEmail', `ada-${suffix}@example.com`);",
+              "pm.collectionVariables.set('contactPhone', `555-${suffix}`);",
+              "pm.collectionVariables.set('updatedContactEmail', `updated-ada-${suffix}@example.com`);"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 201', () => pm.response.to.have.status(201));",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('contactId', body.id);",
+              "pm.test('stores contact id', () => pm.expect(body.id).to.exist);",
+              "pm.test('returns created email', () => {",
+              "  pm.expect(body.email).to.eql(pm.collectionVariables.get('contactEmail'));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Ada\",\n  \"lastName\": \"Lovelace\",\n  \"dateOfBirth\": \"1815-12-10\",\n  \"email\": \"{{contactEmail}}\",\n  \"phones\": [\n    {\n      \"number\": \"{{contactPhone}}\",\n      \"typeName\": \"mobile\"\n    }\n  ],\n  \"addresses\": [\n    {\n      \"locality\": \"Cordoba\",\n      \"street\": \"San Martin\",\n      \"number\": 100,\n      \"notes\": \"Postman smoke flow\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/contacts",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "contacts"]
+        }
+      }
+    },
+    {
+      "name": "Find Contact By Email",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/contacts/by-email?email={{contactEmail}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "contacts", "by-email"],
+          "query": [
+            {
+              "key": "email",
+              "value": "{{contactEmail}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns the requested contact', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.id).to.eql(pm.collectionVariables.get('contactId'));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Find Contacts By Personal Data",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/contacts?lastName=Lovelace",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "contacts"],
+          "query": [
+            {
+              "key": "lastName",
+              "value": "Lovelace"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 200', () => pm.response.to.have.status(200));",
+              "pm.test('contains created contact', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.some((contact) => contact.id === pm.collectionVariables.get('contactId'))).to.eql(true);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Find Contact By Phone",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/contacts/by-phone?number={{contactPhone}}&typeName=mobile",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "contacts", "by-phone"],
+          "query": [
+            {
+              "key": "number",
+              "value": "{{contactPhone}}"
+            },
+            {
+              "key": "typeName",
+              "value": "mobile"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 200', () => pm.response.to.have.status(200));",
+              "pm.test('returns the requested contact', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.id).to.eql(pm.collectionVariables.get('contactId'));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Contact Personal Data",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Ada Augusta\",\n  \"email\": \"{{updatedContactEmail}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/contacts/{{contactId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "contacts", "{{contactId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 200', () => pm.response.to.have.status(200));",
+              "pm.test('updates personal data', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.firstName).to.eql('Ada Augusta');",
+              "  pm.expect(body.email).to.eql(pm.collectionVariables.get('updatedContactEmail'));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Activity",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"personId\": \"{{contactId}}\",\n  \"activityType\": \"call\",\n  \"activityDate\": \"{{$isoTimestamp}}\",\n  \"description\": \"Postman smoke call\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/activities",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "activities"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 201', () => pm.response.to.have.status(201));",
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('activityId', body.id);",
+              "pm.test('returns contact details', () => {",
+              "  pm.expect(body.contact.id).to.eql(pm.collectionVariables.get('contactId'));",
+              "  pm.expect(body.contact.email).to.eql(pm.collectionVariables.get('updatedContactEmail'));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Find Activities By Contact And Type",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/activities?personId={{contactId}}&activityType=call",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "activities"],
+          "query": [
+            {
+              "key": "personId",
+              "value": "{{contactId}}"
+            },
+            {
+              "key": "activityType",
+              "value": "call"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 200', () => pm.response.to.have.status(200));",
+              "pm.test('contains created activity', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.some((activity) => activity.id === pm.collectionVariables.get('activityId'))).to.eql(true);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Contact",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/contacts/{{contactId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "contacts", "{{contactId}}"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.test('returns 204', () => pm.response.to.have.status(204));"],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Confirm Contact Was Deleted",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/contacts/by-email?email={{updatedContactEmail}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "contacts", "by-email"],
+          "query": [
+            {
+              "key": "email",
+              "value": "{{updatedContactEmail}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('returns 404', () => pm.response.to.have.status(404));",
+              "pm.test('returns CONTACT_NOT_FOUND', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.error.code).to.eql('CONTACT_NOT_FOUND');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "contactId",
+      "value": ""
+    },
+    {
+      "key": "contactEmail",
+      "value": ""
+    },
+    {
+      "key": "updatedContactEmail",
+      "value": ""
+    },
+    {
+      "key": "contactPhone",
+      "value": ""
+    },
+    {
+      "key": "activityId",
+      "value": ""
+    }
+  ]
+}

@@ -72,6 +72,23 @@ Por seguridad, el runner de migraciones rechaza cualquier destino distinto de
 curl http://localhost:3000/api/health
 ```
 
+## Postman
+
+La documentación ejecutable de la API está en `.postman`:
+
+- `.postman/emergencias-backend-challenge.postman_collection.json`
+- `.postman/local.postman_environment.json`
+
+Para usarla:
+
+1. Importar la colección y el environment en Postman.
+2. Seleccionar el environment `Backend Challenge Local`.
+3. Ejecutar los requests en orden desde `Health Check` hasta
+   `Confirm Contact Was Deleted`.
+
+El flujo crea datos únicos, reutiliza variables entre requests y elimina el
+contacto al final.
+
 ## Formato De Errores
 
 La API responde los errores con una estructura consistente:
