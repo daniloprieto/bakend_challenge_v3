@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
+import { createContactRouter } from '../../modules/contacts/infrastructure/http/contact.routes.js';
 import { createHealthRouter } from '../../modules/health/infrastructure/http/health.routes.js';
 import { env } from '../config/env.js';
 import { errorHandler } from './middlewares/error-handler.middleware.js';
@@ -14,6 +15,7 @@ export function createApp(): express.Express {
   app.use(cors());
   app.use(express.json());
 
+  app.use(env.API_PREFIX, createContactRouter());
   app.use(env.API_PREFIX, createHealthRouter());
 
   app.use(notFoundHandler);
