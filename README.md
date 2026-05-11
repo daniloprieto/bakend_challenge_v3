@@ -25,14 +25,15 @@ sin agregar capas innecesarias para el tamaño del challenge.
 
 - Node.js 22+
 - npm 10+
-
-PostgreSQL se agregará en la siguiente etapa con Docker Compose.
+- Docker, para levantar PostgreSQL aislado del PostgreSQL local.
 
 ## Setup
 
 ```bash
 npm install
 cp .env.example .env
+docker compose up -d postgres
+npm run db:migrate
 npm run dev
 ```
 
@@ -40,10 +41,30 @@ npm run dev
 
 ```bash
 npm run build
+npm run db:migrate
 npm run lint
 npm run format
 npm run start
 ```
+
+## Base De Datos
+
+El proyecto usa PostgreSQL 18.3 con Docker Compose. Para no tocar bases locales
+existentes, el contenedor publica PostgreSQL en `localhost:5433` y usa una base
+propia llamada `emergencias_challenge`.
+
+```txt
+postgres://challenge:challenge@localhost:5433/emergencias_challenge
+```
+
+Las migraciones SQL viven en `database/migrations` y se ejecutan con:
+
+```bash
+npm run db:migrate
+```
+
+Por seguridad, el runner de migraciones rechaza cualquier destino distinto de
+`localhost:5433/emergencias_challenge`.
 
 ## Health Check
 
