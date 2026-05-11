@@ -1,0 +1,48 @@
+{
+  "name": "backend_challenge_v3",
+  "version": "1.0.0",
+  "description": "Backend challenge API built with TypeScript, Express and PostgreSQL.",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/main.ts",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "start": "node dist/main.js",
+    "test": "echo \"No tests configured yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniloprieto/bakend_challenge_v3.git"
+  },
+  "keywords": [
+    "typescript",
+    "express",
+    "hexagonal-architecture"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daniloprieto/bakend_challenge_v3/issues"
+  },
+  "homepage": "https://github.com/daniloprieto/bakend_challenge_v3#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.2",
+    "eslint": "^10.3.0",
+    "prettier": "^3.8.3",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.2"
+  }
+}
