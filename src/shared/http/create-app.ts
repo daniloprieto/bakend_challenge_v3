@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
+import { createActivityRouter } from '../../modules/activities/infrastructure/http/activity.routes.js';
 import { createContactRouter } from '../../modules/contacts/infrastructure/http/contact.routes.js';
 import { createHealthRouter } from '../../modules/health/infrastructure/http/health.routes.js';
 import { env } from '../config/env.js';
@@ -15,6 +16,7 @@ export function createApp(): express.Express {
   app.use(cors());
   app.use(express.json());
 
+  app.use(env.API_PREFIX, createActivityRouter());
   app.use(env.API_PREFIX, createContactRouter());
   app.use(env.API_PREFIX, createHealthRouter());
 
