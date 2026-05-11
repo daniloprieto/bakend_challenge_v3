@@ -71,3 +71,25 @@ Por seguridad, el runner de migraciones rechaza cualquier destino distinto de
 ```bash
 curl http://localhost:3000/api/health
 ```
+
+## Formato De Errores
+
+La API responde los errores con una estructura consistente:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid request data",
+    "details": [
+      {
+        "path": "email",
+        "message": "Invalid email address"
+      }
+    ]
+  }
+}
+```
+
+`details` sólo se incluye cuando hay información adicional útil, por ejemplo en
+errores de validación.

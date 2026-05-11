@@ -44,7 +44,7 @@ export class ActivityController {
 
 function mapActivityError(error: unknown): unknown {
   if (error instanceof ActivityContactNotFoundError) {
-    return new HttpError(error.message, 404);
+    return new HttpError(error.message, 404, 'CONTACT_NOT_FOUND');
   }
 
   return error;

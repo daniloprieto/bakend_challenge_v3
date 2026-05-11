@@ -43,7 +43,7 @@ export class ContactController {
     const contact = await this.dependencies.findContactByEmail.execute(query.email);
 
     if (!contact) {
-      throw new HttpError('Contact not found', 404);
+      throw new HttpError('Contact not found', 404, 'CONTACT_NOT_FOUND');
     }
 
     response.status(200).json(contact);
@@ -54,7 +54,7 @@ export class ContactController {
     const contact = await this.dependencies.findContactByPhone.execute(query);
 
     if (!contact) {
-      throw new HttpError('Contact not found', 404);
+      throw new HttpError('Contact not found', 404, 'CONTACT_NOT_FOUND');
     }
 
     response.status(200).json(contact);
@@ -70,11 +70,11 @@ export class ContactController {
 
 function mapContactError(error: unknown): unknown {
   if (error instanceof ContactEmailAlreadyExistsError) {
-    return new HttpError(error.message, 409);
+    return new HttpError(error.message, 409, 'CONTACT_EMAIL_ALREADY_EXISTS');
   }
 
   if (error instanceof PhoneTypeNotFoundError) {
-    return new HttpError(error.message, 400);
+    return new HttpError(error.message, 400, 'PHONE_TYPE_NOT_FOUND');
   }
 
   return error;
