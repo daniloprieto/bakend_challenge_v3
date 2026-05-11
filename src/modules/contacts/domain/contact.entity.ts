@@ -62,3 +62,10 @@ export type ContactPhoneCriteria = {
   number: string;
   typeName: string;
 };
+
+export type UpdateContactPersonalData = {
+  dateOfBirth?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+};

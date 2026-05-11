@@ -13,6 +13,7 @@ import type {
   CreateContactData,
   CreateContactPhone,
   Phone,
+  UpdateContactPersonalData,
 } from '../../domain/contact.entity.js';
 import type { ContactRepository } from '../../domain/contact.repository.js';
 
@@ -91,6 +92,12 @@ export class PostgresContactRepository implements ContactRepository {
     return result.rows[0]?.exists ?? false;
   }
 
+  async deleteById(contactId: string): Promise<boolean> {
+    const result = await this.pool.query('DELETE FROM person WHERE id = $1', [contactId]);
+
+    return (result.rowCount ?? 0) > 0;
+  }
+
   async findByEmail(email: string): Promise<Contact | null> {
     const result = await this.pool.query<PersonRow>(
       'SELECT * FROM person WHERE LOWER(email) = LOWER($1) LIMIT 1',
@@ -145,6 +152,57 @@ export class PostgresContactRepository implements ContactRepository {
         LIMIT 1
       `,
       [criteria.number, criteria.typeName],
+    );
+    const person = result.rows[0];
+
+    if (!person) {
+      return null;
+    }
+
+    return this.buildContact(this.pool, person);
+  }
+
+  async updatePersonalData(
+    contactId: string,
+    data: UpdateContactPersonalData,
+  ): Promise<Contact | null> {
+    const updates: string[] = [];
+    const values: string[] = [];
+
+    if (data.firstName !== undefined) {
+      values.push(data.firstName);
+      updates.push(`first_name = $${values.length}`);
+    }
+
+    if (data.lastName !== undefined) {
+      values.push(data.lastName);
+      updates.push(`last_name = $${values.length}`);
+    }
+
+    if (data.dateOfBirth !== undefined) {
+      values.push(data.dateOfBirth);
+      updates.push(`date_of_birth = $${values.length}`);
+    }
+
+    if (data.email !== undefined) {
+      values.push(data.email);
+      updates.push(`email = $${values.length}`);
+    }
+
+    if (updates.length === 0) {
+      return this.findById(this.pool, contactId);
+    }
+
+    values.push(contactId);
+    const result = await this.pool.query<PersonRow>(
+      `
+        UPDATE person
+        SET ${updates.join(', ')},
+            updated_at = NOW()
+        WHERE id = $${values.length}
+        RETURNING *
+      `,
+      values,
     );
     const person = result.rows[0];
 

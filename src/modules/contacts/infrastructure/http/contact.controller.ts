@@ -1,9 +1,11 @@
 import type { RequestHandler } from 'express';
 
 import type { CreateContactUseCase } from '../../application/create-contact.use-case.js';
+import type { DeleteContactUseCase } from '../../application/delete-contact.use-case.js';
 import type { FindContactByEmailUseCase } from '../../application/find-contact-by-email.use-case.js';
 import type { FindContactByPhoneUseCase } from '../../application/find-contact-by-phone.use-case.js';
 import type { FindContactsByPersonalDataUseCase } from '../../application/find-contacts-by-personal-data.use-case.js';
+import type { UpdateContactPersonalDataUseCase } from '../../application/update-contact-personal-data.use-case.js';
 import {
   ContactEmailAlreadyExistsError,
   PhoneTypeNotFoundError,
@@ -11,17 +13,21 @@ import {
 import { HttpError } from '../../../../shared/http/errors/http-error.js';
 import { asyncHandler } from '../../../../shared/http/async-handler.js';
 import {
+  contactParamsSchema,
   createContactSchema,
   findContactByEmailSchema,
   findContactByPhoneSchema,
   findContactsByPersonalDataSchema,
+  updateContactPersonalDataSchema,
 } from './contact.schemas.js';
 
 type ContactControllerDependencies = {
   createContact: CreateContactUseCase;
+  deleteContact: DeleteContactUseCase;
   findContactByEmail: FindContactByEmailUseCase;
   findContactByPhone: FindContactByPhoneUseCase;
   findContactsByPersonalData: FindContactsByPersonalDataUseCase;
+  updateContactPersonalData: UpdateContactPersonalDataUseCase;
 };
 
 export class ContactController {
@@ -65,6 +71,37 @@ export class ContactController {
     const contacts = await this.dependencies.findContactsByPersonalData.execute(query);
 
     response.status(200).json(contacts);
+  });
+
+  updatePersonalData: RequestHandler = asyncHandler(async (request, response) => {
+    const params = contactParamsSchema.parse(request.params);
+    const input = updateContactPersonalDataSchema.parse(request.body);
+
+    try {
+      const contact = await this.dependencies.updateContactPersonalData.execute(
+        params.id,
+        input,
+      );
+
+      if (!contact) {
+        throw new HttpError('Contact not found', 404, 'CONTACT_NOT_FOUND');
+      }
+
+      response.status(200).json(contact);
+    } catch (error) {
+      throw mapContactError(error);
+    }
+  });
+
+  delete: RequestHandler = asyncHandler(async (request, response) => {
+    const params = contactParamsSchema.parse(request.params);
+    const wasDeleted = await this.dependencies.deleteContact.execute(params.id);
+
+    if (!wasDeleted) {
+      throw new HttpError('Contact not found', 404, 'CONTACT_NOT_FOUND');
+    }
+
+    response.status(204).send();
   });
 }
 

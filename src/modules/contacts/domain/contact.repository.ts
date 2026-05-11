@@ -3,12 +3,18 @@ import type {
   ContactPersonalDataCriteria,
   ContactPhoneCriteria,
   CreateContactData,
+  UpdateContactPersonalData,
 } from './contact.entity.js';
 
 export type ContactRepository = {
   create(data: CreateContactData): Promise<Contact>;
+  deleteById(contactId: string): Promise<boolean>;
   existsByEmail(email: string): Promise<boolean>;
   findByEmail(email: string): Promise<Contact | null>;
   findByPersonalData(criteria: ContactPersonalDataCriteria): Promise<Contact[]>;
   findByPhone(criteria: ContactPhoneCriteria): Promise<Contact | null>;
+  updatePersonalData(
+    contactId: string,
+    data: UpdateContactPersonalData,
+  ): Promise<Contact | null>;
 };

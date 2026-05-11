@@ -4,6 +4,9 @@ const nonEmptyStringSchema = z.string().trim().min(1);
 const dateOnlySchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
   message: 'Expected date format YYYY-MM-DD',
 });
+const positiveIdSchema = z.string().regex(/^\d+$/, {
+  message: 'Expected a positive numeric id',
+});
 
 export const createContactSchema = z.object({
   addresses: z
@@ -51,5 +54,24 @@ export const findContactsByPersonalDataSchema = z
     {
       message:
         'At least one search criterion is required: firstName, lastName or dateOfBirth',
+    },
+  );
+
+export const contactParamsSchema = z.object({
+  id: positiveIdSchema,
+});
+
+export const updateContactPersonalDataSchema = z
+  .object({
+    dateOfBirth: dateOnlySchema.optional(),
+    email: z.email().optional(),
+    firstName: z.string().trim().min(1).optional(),
+    lastName: z.string().trim().min(1).optional(),
+  })
+  .refine(
+    (data) => Boolean(data.dateOfBirth || data.email || data.firstName || data.lastName),
+    {
+      message:
+        'At least one field is required: firstName, lastName, dateOfBirth or email',
     },
   );
