@@ -76,6 +76,7 @@ npm run dev
 npm run build
 npm run db:migrate
 npm run lint
+npm run test
 npm run format
 npm run start
 ```
@@ -260,6 +261,7 @@ Comandos ejecutados durante el desarrollo:
 ```bash
 npm run build
 npm run lint
+npm run test
 ```
 
 También se validó manualmente el flujo completo contra PostgreSQL en Docker:

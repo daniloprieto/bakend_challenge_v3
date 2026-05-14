@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "start": "node dist/main.js",
-    "test": "echo \"No tests configured yet\""
+    "test": "tsx --test tests/**/*.test.ts"
   },
   "repository": {
     "type": "git",
