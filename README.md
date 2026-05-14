@@ -61,14 +61,47 @@ src/
 - npm 10+
 - Docker, para levantar PostgreSQL aislado del PostgreSQL local.
 
-## Setup
+## Cómo Ejecutar Desde Cero
+
+Clonar el repositorio:
+
+```bash
+git clone https://github.com/daniloprieto/backend_challenge_v3.git
+cd backend_challenge_v3
+```
+
+Instalar dependencias y crear el archivo de entorno:
 
 ```bash
 npm install
 cp .env.example .env
+```
+
+Levantar PostgreSQL con Docker y ejecutar migraciones:
+
+```bash
 docker compose up -d postgres
 npm run db:migrate
+```
+
+Ejecutar la API en modo desarrollo:
+
+```bash
 npm run dev
+```
+
+La API queda disponible en:
+
+```txt
+http://localhost:3000/api
+```
+
+URLs útiles:
+
+```txt
+Health:       http://localhost:3000/api/health
+Swagger UI:   http://localhost:3000/api/docs
+OpenAPI JSON: http://localhost:3000/api/openapi.json
 ```
 
 ## Scripts
@@ -80,6 +113,18 @@ npm run lint
 npm run test
 npm run format
 npm run start
+```
+
+Uso esperado de los scripts:
+
+```txt
+npm run dev         Ejecuta la API en modo desarrollo.
+npm run start       Ejecuta la API compilada desde dist.
+npm run build       Compila TypeScript.
+npm run db:migrate  Ejecuta migraciones de base de datos.
+npm run lint        Ejecuta ESLint.
+npm run test        Ejecuta tests unitarios.
+npm run format      Formatea el proyecto con Prettier.
 ```
 
 ## Endpoints
@@ -218,6 +263,12 @@ http://localhost:3000/api/openapi.json
 Los tests unitarios usan `node:test` y cubren los casos de uso de contactos,
 actividades y health sin depender de PostgreSQL.
 
+Para ejecutarlos:
+
+```bash
+npm run test
+```
+
 ## Postman
 
 La documentación ejecutable de la API está en `.postman`:
@@ -271,7 +322,7 @@ errores de validación.
 
 ## Verificación
 
-Comandos ejecutados durante el desarrollo:
+Comandos recomendados antes de evaluar o enviar el proyecto:
 
 ```bash
 npm run build
