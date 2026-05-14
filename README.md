@@ -11,6 +11,7 @@ TypeScript, Express y PostgreSQL.
 - PostgreSQL 18.3
 - Zod
 - ESLint + Prettier
+- Swagger / OpenAPI
 - Postman
 
 ## Arquitectura
@@ -202,6 +203,20 @@ Por seguridad, el runner de migraciones rechaza cualquier destino distinto de
 ```bash
 curl http://localhost:3000/api/health
 ```
+
+## Swagger / OpenAPI
+
+La documentación OpenAPI está disponible en:
+
+```txt
+http://localhost:3000/api/docs
+http://localhost:3000/api/openapi.json
+```
+
+## Tests
+
+Los tests unitarios usan `node:test` y cubren los casos de uso de contactos,
+actividades y health sin depender de PostgreSQL.
 
 ## Postman
 

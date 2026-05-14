@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/daniloprieto/bakend_challenge_v3.git"
+    "url": "git+https://github.com/daniloprieto/backend_challenge_v3.git"
   },
   "keywords": [
     "typescript",
@@ -25,15 +25,16 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/daniloprieto/bakend_challenge_v3/issues"
+    "url": "https://github.com/daniloprieto/backend_challenge_v3/issues"
   },
-  "homepage": "https://github.com/daniloprieto/bakend_challenge_v3#readme",
+  "homepage": "https://github.com/daniloprieto/backend_challenge_v3#readme",
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "pg": "^8.20.0",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -42,6 +43,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.6.2",
     "@types/pg": "^8.20.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^10.3.0",
     "prettier": "^3.8.3",
     "tsx": "^4.21.0",
